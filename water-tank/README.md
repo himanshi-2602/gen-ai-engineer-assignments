@@ -2,6 +2,8 @@
 
 A frontend web application built with **Vanilla JavaScript, HTML and CSS** that computes how many units of water are stored between blocks of given heights, and visualizes the result as **SVG** grids.
 
+**Live demo:** https://himanshi-2602.github.io/gen-ai-engineer-assignments/water-tank/
+
 ## Problem
 
 Given an array of `n` block heights (each height is a whole number greater than -1), compute the units of water stored in between the blocks.
