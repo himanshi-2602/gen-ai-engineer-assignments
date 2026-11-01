@@ -158,6 +158,28 @@ The 92% accuracy applies to **CIFAR-10-style images**. Photos uploaded to the AP
 
 Possible improvements: colour-jitter and greyscale augmentation (so the model can't rely on "horses are brown"), temperature scaling to calibrate the confidence values, and a low-confidence warning in the app. A model pre-trained on large, high-resolution datasets would handle such photos far better, but the assignment requires a model trained from scratch.
 
+### Environment, constraints and next steps
+
+**Hardware used:** a Mac with an Apple M5 chip (a single integrated GPU, used through PyTorch's MPS backend) and 24 GB of RAM, running Python 3.9.6 and PyTorch 2.8. There is no NVIDIA GPU.
+
+**How this affected the work:**
+
+| Constraint | Effect | How it was handled |
+|---|---|---|
+| Single GPU, and MPS doesn't support DDP | A multi-GPU speed-up couldn't be measured | DDP verified with 2 CPU processes (gloo); the same code uses NCCL on CUDA machines |
+| No NVIDIA Tensor Cores | Mixed precision gave only about 7% speed-up | Accuracy parity confirmed; larger gains expected on CUDA |
+| About 15 minutes per 30-epoch run | No long schedules, and **one seed per configuration** | Differences under about 0.3 pp are reported as noise, not as improvements |
+| Small CNN, by design (the assignment asks for a small CNN from scratch) | About 92% test accuracy | A deliberate trade-off: fast to train, easy to read, and a fair baseline vs residual comparison |
+
+**Deliberate design choices (not resource limits):** a small model (about 1.2M parameters) rather than a deep ResNet; training from scratch rather than pre-training; and a validation split held out from training, so the test set is used only once.
+
+**What I would do next with more time or compute:**
+1. **Repeat each run with 3–5 seeds** and report mean ± standard deviation, to tell real improvements from noise. This matters most for the baseline vs residual and AMP comparisons.
+2. **A deeper network** (2 or more residual blocks per stage, ResNet-18 style). This is where skip connections should clearly beat a plain CNN of the same depth; ResNet-18-size models trained from scratch commonly reach about 95% on CIFAR-10.
+3. **Longer training** (100–200 epochs) and stronger regularization and augmentation (Cutout / RandAugment, label smoothing, colour jitter).
+4. **Calibration** (temperature scaling) and out-of-distribution handling for the API.
+5. **Real multi-GPU DDP benchmarks**, and mixed precision on CUDA hardware.
+
 ### Project structure
 
 ```
