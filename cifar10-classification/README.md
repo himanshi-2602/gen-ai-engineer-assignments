@@ -148,6 +148,16 @@ Invalid files return `400`, and uploads over 5 MB return `413`. The serving code
 #### 5. Unit tests
 `python -m pytest -q` runs **19 tests** in about 9 seconds (see [Unit tests](#unit-tests)).
 
+### Limitations: real-world photos
+
+The 92% accuracy applies to **CIFAR-10-style images**. Photos uploaded to the API can fail even with high confidence. For example, a photo of a **white horse rearing up against a pale sky** was classified as *bird (97%)*:
+
+- **Distribution shift:** CIFAR-10 horses are mostly brown or dark, standing side-on, on grass or dirt. Only about 6% of training horses are as bright and colourless as that photo, compared with about 25% of airplanes. Birds and airplanes are usually photographed against the sky, so at 32×32 a pale shape with spread-out limbs on a bright background looks like them.
+- **Resolution:** shrinking to 32×32 removes the details (head, mane, hooves) that would identify the horse, leaving mostly colour and outline.
+- **Overconfidence:** softmax probabilities must add up to 100% across the 10 classes, even for unfamiliar inputs, and neural networks are typically overconfident on such inputs. The prediction was also unstable: slightly different crops of the same photo gave *airplane 54%* or *bird 57%*.
+
+Possible improvements: colour-jitter and greyscale augmentation (so the model can't rely on "horses are brown"), temperature scaling to calibrate the confidence values, and a low-confidence warning in the app. A model pre-trained on large, high-resolution datasets would handle such photos far better, but the assignment requires a model trained from scratch.
+
 ### Project structure
 
 ```

@@ -67,8 +67,10 @@ def index() -> str:
   body { font-family: system-ui, sans-serif; max-width: 560px; margin: 40px auto; padding: 0 16px; color: #1c2430; }
   .card { border: 1px solid #d9dfe7; border-radius: 10px; padding: 20px; }
   img { width: 160px; height: 160px; object-fit: cover; image-rendering: pixelated; border-radius: 6px; margin-top: 12px; }
-  .bar { background: #e8eef7; border-radius: 4px; margin: 6px 0; }
-  .bar span { display: block; background: #0a84ff; color: #fff; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .row { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+  .row .name { width: 150px; white-space: nowrap; }
+  .bar { flex: 1; height: 14px; background: #e8eef7; border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: #0a84ff; }
   .muted { color: #5d6b7e; }
 </style></head>
 <body>
@@ -94,8 +96,10 @@ def index() -> str:
     const data = await response.json();
     if (!response.ok) { result.textContent = data.detail; return; }
     result.innerHTML = "<h2>" + data.label + "</h2>" + data.top_k.map(p =>
-      '<div class="bar"><span style="width:' + Math.max(p.probability * 100, 12) + '%">' +
-      p.label + " " + (p.probability * 100).toFixed(1) + "%</span></div>").join("");
+      '<div class="row"><span class="name">' + p.label + " " + (p.probability * 100).toFixed(1) + "%</span>" +
+      '<div class="bar"><span style="width:' + p.probability * 100 + '%"></span></div></div>').join("") +
+      '<p class="muted">The model was trained on tiny 32&times;32 CIFAR-10 photos, so unusual photos ' +
+      "(different colours, poses or backgrounds) can be misclassified, sometimes with high confidence.</p>";
   });
 </script>
 </body></html>"""
