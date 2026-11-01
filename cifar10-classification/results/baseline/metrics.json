@@ -1,5 +1,7 @@
 {
+  "run": "baseline",
   "model": "baseline",
+  "mixed_precision": false,
   "parameters": 1148874,
   "test_accuracy": 0.9177,
   "test_loss": 0.2448305908203125,

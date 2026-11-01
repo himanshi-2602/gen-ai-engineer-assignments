@@ -1,0 +1,24 @@
+{
+  "run": "residual_amp",
+  "model": "residual",
+  "mixed_precision": true,
+  "parameters": 1190922,
+  "test_accuracy": 0.9207,
+  "test_loss": 0.239709326171875,
+  "best_val_accuracy": 0.928,
+  "best_epoch": 30,
+  "epochs_trained": 30,
+  "train_time_seconds": 787.4702196121216,
+  "per_class_accuracy": {
+    "airplane": 0.925,
+    "automobile": 0.965,
+    "bird": 0.869,
+    "cat": 0.813,
+    "deer": 0.945,
+    "dog": 0.884,
+    "frog": 0.95,
+    "horse": 0.943,
+    "ship": 0.964,
+    "truck": 0.949
+  }
+}

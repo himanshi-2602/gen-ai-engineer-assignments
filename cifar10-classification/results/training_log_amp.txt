@@ -1,0 +1,67 @@
+Run: residual_amp | model: residual | parameters: 1,190,922 | device: mps | processes: 1 | mixed precision: torch.float16
+Train / val / test batches per process: 351 / 20 / 40
+epoch   1/30 | train loss 1.6589 acc 38.33% | val loss 1.4153 acc 48.58% | lr 0.0069 |  26.4s  * best
+epoch   2/30 | train loss 1.3152 acc 52.47% | val loss 1.2782 acc 54.54% | lr 0.0152 |  18.1s  * best
+epoch   3/30 | train loss 1.1265 acc 59.46% | val loss 1.0544 acc 63.66% | lr 0.0280 |  18.6s  * best
+epoch   4/30 | train loss 0.9917 acc 64.75% | val loss 0.9641 acc 65.58% | lr 0.0437 |  21.6s  * best
+epoch   5/30 | train loss 0.8623 acc 69.64% | val loss 1.1646 acc 60.78% | lr 0.0604 |  19.6s
+epoch   6/30 | train loss 0.7704 acc 72.95% | val loss 0.8827 acc 70.84% | lr 0.0760 |  19.2s  * best
+epoch   7/30 | train loss 0.6856 acc 76.26% | val loss 0.8091 acc 73.14% | lr 0.0888 |  19.4s  * best
+epoch   8/30 | train loss 0.6287 acc 78.37% | val loss 0.5465 acc 81.64% | lr 0.0971 |  21.0s  * best
+epoch   9/30 | train loss 0.5808 acc 80.09% | val loss 0.5322 acc 82.50% | lr 0.1000 |  23.4s  * best
+epoch  10/30 | train loss 0.5444 acc 81.49% | val loss 0.6190 acc 78.84% | lr 0.0994 |  25.9s
+epoch  11/30 | train loss 0.5168 acc 82.09% | val loss 0.5262 acc 81.38% | lr 0.0978 |  26.4s
+epoch  12/30 | train loss 0.4969 acc 83.02% | val loss 0.5454 acc 81.72% | lr 0.0950 |  26.0s
+epoch  13/30 | train loss 0.4716 acc 83.86% | val loss 0.5913 acc 80.80% | lr 0.0913 |  26.6s
+epoch  14/30 | train loss 0.4590 acc 84.39% | val loss 0.5385 acc 82.64% | lr 0.0866 |  26.0s  * best
+epoch  15/30 | train loss 0.4450 acc 84.89% | val loss 0.5464 acc 82.02% | lr 0.0812 |  27.1s
+epoch  16/30 | train loss 0.4284 acc 85.46% | val loss 0.4592 acc 84.14% | lr 0.0750 |  29.3s  * best
+epoch  17/30 | train loss 0.4112 acc 85.81% | val loss 0.4548 acc 84.26% | lr 0.0682 |  28.4s  * best
+epoch  18/30 | train loss 0.3932 acc 86.51% | val loss 0.5018 acc 83.22% | lr 0.0611 |  29.1s
+epoch  19/30 | train loss 0.3847 acc 86.80% | val loss 0.3674 acc 87.76% | lr 0.0537 |  27.7s  * best
+epoch  20/30 | train loss 0.3663 acc 87.54% | val loss 0.4513 acc 84.88% | lr 0.0462 |  28.5s
+epoch  21/30 | train loss 0.3509 acc 88.01% | val loss 0.3330 acc 89.00% | lr 0.0389 |  31.3s  * best
+epoch  22/30 | train loss 0.3311 acc 88.61% | val loss 0.4350 acc 86.42% | lr 0.0317 |  30.4s
+epoch  23/30 | train loss 0.3100 acc 89.45% | val loss 0.3245 acc 89.22% | lr 0.0250 |  31.8s  * best
+epoch  24/30 | train loss 0.2856 acc 90.21% | val loss 0.3128 acc 89.38% | lr 0.0188 |  31.2s  * best
+epoch  25/30 | train loss 0.2552 acc 91.29% | val loss 0.2851 acc 90.38% | lr 0.0133 |  28.9s  * best
+epoch  26/30 | train loss 0.2279 acc 92.16% | val loss 0.2806 acc 90.62% | lr 0.0087 |  30.9s  * best
+epoch  27/30 | train loss 0.1935 acc 93.43% | val loss 0.2587 acc 91.60% | lr 0.0049 |  32.6s  * best
+epoch  28/30 | train loss 0.1647 acc 94.40% | val loss 0.2237 acc 92.44% | lr 0.0022 |  28.2s  * best
+epoch  29/30 | train loss 0.1434 acc 95.30% | val loss 0.2167 acc 92.56% | lr 0.0006 |  26.9s  * best
+epoch  30/30 | train loss 0.1340 acc 95.69% | val loss 0.2138 acc 92.80% | lr 0.0000 |  27.0s  * best
+Best validation accuracy: 92.80% (checkpoint: checkpoints/residual_amp/best.pt)
+Run: residual_amp | model: residual (1,190,922 parameters), best epoch 30
+Test accuracy: 92.07% | test loss: 0.2397
+  airplane   92.50%
+  automobile 96.50%
+  bird       86.90%
+  cat        81.30%
+  deer       94.50%
+  dog        88.40%
+  frog       95.00%
+  horse      94.30%
+  ship       96.40%
+  truck      94.90%
+Plots and metrics written to results/residual_amp/
+| Run | Parameters | Test accuracy | Test loss | Best val accuracy | Best epoch | Train time |
+|---|---|---|---|---|---|---|
+| residual | 1,190,922 | **91.79%** | 0.2387 | 92.58% | 30/30 | 14.1 min |
+| residual_amp | 1,190,922 | **92.07%** | 0.2397 | 92.80% | 30/30 | 13.1 min |
+
+| Class | residual | residual_amp |
+|---|---|---|
+| airplane | 93.40% | 92.50% |
+| automobile | 95.60% | 96.50% |
+| bird | 85.50% | 86.90% |
+| cat | 81.10% | 81.30% |
+| deer | 93.60% | 94.50% |
+| dog | 88.10% | 88.40% |
+| frog | 94.60% | 95.00% |
+| horse | 94.30% | 94.30% |
+| ship | 96.60% | 96.40% |
+| truck | 95.10% | 94.90% |
+
+**residual_amp vs residual: +0.28 percentage points of test accuracy.**
+
+Written results/comparison_amp.md and .png

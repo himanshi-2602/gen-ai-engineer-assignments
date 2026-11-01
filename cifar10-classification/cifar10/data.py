@@ -1,19 +1,15 @@
 """Data pipeline: CIFAR-10 loading, preprocessing, augmentation and DataLoaders."""
 from __future__ import annotations
 
-from typing import List, NamedTuple, Tuple
+from typing import List, NamedTuple, Optional, Tuple
 
 import torch
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader, DistributedSampler, Subset
 from torchvision import datasets
 from torchvision import transforms as T
 
+from .constants import CIFAR10_MEAN, CIFAR10_STD, CLASSES  # noqa: F401  (re-exported)
 from .utils import seed_worker
-
-# Per-channel mean / std of the CIFAR-10 training set.
-CIFAR10_MEAN = (0.4914, 0.4822, 0.4465)
-CIFAR10_STD = (0.2470, 0.2435, 0.2616)
-CLASSES = ("airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck")
 
 
 class DataLoaders(NamedTuple):
@@ -48,18 +44,26 @@ def get_dataloaders(
     num_workers: int = 4,
     seed: int = 42,
     download: bool = True,
+    distributed: bool = False,
+    train_subset: Optional[int] = None,
 ) -> DataLoaders:
     """Build train / validation / test loaders.
 
     The 50k training images are split into 45k for training (augmented) and 5k for
     validation (not augmented). Validation picks the best checkpoint, so the 10k test
     set is only used for the final evaluation.
+
+    distributed: shard the training set across DDP processes with a DistributedSampler.
+    train_subset: use only the first N training images (for quick smoke tests).
     """
     # Two views of the same training images: one augmented, one plain.
     train_full = datasets.CIFAR10(data_dir, train=True, transform=build_transforms(True), download=download)
     eval_full = datasets.CIFAR10(data_dir, train=True, transform=build_transforms(False), download=False)
     test_set = datasets.CIFAR10(data_dir, train=False, transform=build_transforms(False), download=download)
     train_idx, val_idx = split_indices(len(train_full), val_size, seed)
+    if train_subset is not None:
+        train_idx = train_idx[:train_subset]
+    train_set = Subset(train_full, train_idx)
 
     common = dict(
         num_workers=num_workers,
@@ -70,14 +74,19 @@ def get_dataloaders(
     if num_workers > 0:
         common["prefetch_factor"] = 4
 
-    train_loader = DataLoader(
-        Subset(train_full, train_idx),
-        batch_size=batch_size,
-        shuffle=True,
-        drop_last=True,
-        generator=torch.Generator().manual_seed(seed),
-        **common,
-    )
+    if distributed:
+        # Each process sees a different 1/world_size shard; call sampler.set_epoch() every epoch.
+        sampler = DistributedSampler(train_set, shuffle=True, seed=seed, drop_last=True)
+        train_loader = DataLoader(train_set, batch_size=batch_size, sampler=sampler, drop_last=True, **common)
+    else:
+        train_loader = DataLoader(
+            train_set,
+            batch_size=batch_size,
+            shuffle=True,
+            drop_last=True,
+            generator=torch.Generator().manual_seed(seed),
+            **common,
+        )
     val_loader = DataLoader(Subset(eval_full, val_idx), batch_size=batch_size * 2, shuffle=False, **common)
     test_loader = DataLoader(test_set, batch_size=batch_size * 2, shuffle=False, **common)
     return DataLoaders(train_loader, val_loader, test_loader)

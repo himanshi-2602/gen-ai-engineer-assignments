@@ -1,7 +1,22 @@
 # Python 3.9+ (tested with Python 3.9.6 on macOS, Apple Silicon / MPS)
+
+# Training and evaluation
 torch==2.8.0
 torchvision==0.23.0
 numpy==2.0.2
 matplotlib==3.9.4
 pillow==11.3.0
+importlib_metadata==8.7.1   # needed by torchrun (DDP) on Python 3.9
+
+# ONNX export and inference
+onnx==1.19.1
+onnxruntime==1.19.2
+
+# Serving (FastAPI)
+fastapi==0.128.8
+uvicorn==0.39.0
+python-multipart==0.0.20
+
+# Tests
 pytest==8.4.2
+httpx==0.28.1

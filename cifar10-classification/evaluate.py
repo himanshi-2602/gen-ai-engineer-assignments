@@ -1,9 +1,10 @@
 """Evaluate the best checkpoint of a trained model on the CIFAR-10 test set.
 
-Writes to results/<model>/: metrics.json, curves.png, misclassified.png, confusion_matrix.png
+Writes to results/<run>/: metrics.json, curves.png, misclassified.png, confusion_matrix.png
 
-Example:
-    python evaluate.py --model baseline
+Examples:
+    python evaluate.py --run baseline
+    python evaluate.py --run residual_amp
 """
 from __future__ import annotations
 
@@ -16,15 +17,16 @@ from torch import nn
 
 from cifar10.data import CLASSES, get_dataloaders
 from cifar10.engine import evaluate, predict
-from cifar10.models import BLOCKS, build_model
+from cifar10.models import build_model
 from cifar10.plots import plot_confusion_matrix, plot_curves, plot_misclassified
 from cifar10.utils import count_parameters, get_device, load_checkpoint
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Evaluate a trained CIFAR-10 model on the test set.")
-    p.add_argument("--model", choices=sorted(BLOCKS), default="baseline")
-    p.add_argument("--checkpoint", default=None, help="defaults to checkpoints/<model>/best.pt")
+    p.add_argument("--run", "--model", dest="run", default="baseline",
+                   help="run name used by train.py (default run names: baseline, residual)")
+    p.add_argument("--checkpoint", default=None, help="defaults to checkpoints/<run>/best.pt")
     p.add_argument("--data-dir", default="data")
     p.add_argument("--results-dir", default="results")
     p.add_argument("--num-workers", type=int, default=4)
@@ -35,7 +37,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     device = get_device(args.device)
-    ckpt_path = Path(args.checkpoint or f"checkpoints/{args.model}/best.pt")
+    ckpt_path = Path(args.checkpoint or f"checkpoints/{args.run}/best.pt")
     ckpt = load_checkpoint(ckpt_path, device)
 
     model = build_model(ckpt["model_name"], **ckpt["model_kwargs"]).to(device)
@@ -51,16 +53,19 @@ def main() -> None:
                             minlength=num_classes ** 2).reshape(num_classes, num_classes)
     per_class = confusion.diagonal() / confusion.sum(axis=1)
 
-    results_dir = Path(args.results_dir) / ckpt["model_name"]
+    run_name = ckpt.get("run_name", ckpt["model_name"])
+    results_dir = Path(args.results_dir) / run_name
     history_path = results_dir / "history.json"
     history = json.loads(history_path.read_text()) if history_path.exists() else ckpt["history"]
 
-    plot_curves(history, results_dir / "curves.png", title=f"{ckpt['model_name']} model")
+    plot_curves(history, results_dir / "curves.png", title=f"{run_name} run")
     plot_misclassified(images, labels, preds, confidences, results_dir / "misclassified.png")
     plot_confusion_matrix(confusion, results_dir / "confusion_matrix.png")
 
     metrics = {
+        "run": run_name,
         "model": ckpt["model_name"],
+        "mixed_precision": bool(ckpt["config"].get("amp", False)),
         "parameters": count_parameters(model),
         "test_accuracy": test_acc,
         "test_loss": test_loss,
@@ -72,7 +77,7 @@ def main() -> None:
     }
     (results_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
 
-    print(f"Model: {metrics['model']} ({metrics['parameters']:,} parameters), best epoch {metrics['best_epoch']}")
+    print(f"Run: {run_name} | model: {metrics['model']} ({metrics['parameters']:,} parameters), best epoch {metrics['best_epoch']}")
     print(f"Test accuracy: {test_acc:.2%} | test loss: {test_loss:.4f}")
     for name, acc in metrics["per_class_accuracy"].items():
         print(f"  {name:<10} {acc:6.2%}")

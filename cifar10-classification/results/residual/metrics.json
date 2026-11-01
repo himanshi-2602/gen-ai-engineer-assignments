@@ -1,5 +1,7 @@
 {
+  "run": "residual",
   "model": "residual",
+  "mixed_precision": false,
   "parameters": 1190922,
   "test_accuracy": 0.9179,
   "test_loss": 0.2386946533203125,

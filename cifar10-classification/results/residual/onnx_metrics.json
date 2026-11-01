@@ -1,0 +1,13 @@
+{
+  "run": "residual",
+  "onnx_file": "checkpoints/residual/model.onnx",
+  "opset": 17,
+  "max_abs_logit_difference": 4.57763671875e-05,
+  "prediction_agreement": 1.0,
+  "pytorch_test_accuracy": 0.9179,
+  "onnxruntime_test_accuracy": 0.9179,
+  "torch_cpu_1_image_ms": 0.837,
+  "onnxruntime_cpu_1_image_ms": 1.399,
+  "torch_cpu_batch256_ms": 267.714,
+  "onnxruntime_cpu_batch256_ms": 317.96
+}
