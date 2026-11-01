@@ -1,0 +1,22 @@
+{
+  "model": "baseline",
+  "parameters": 1148874,
+  "test_accuracy": 0.9177,
+  "test_loss": 0.2448305908203125,
+  "best_val_accuracy": 0.9238,
+  "best_epoch": 29,
+  "epochs_trained": 30,
+  "train_time_seconds": 621.2633829116821,
+  "per_class_accuracy": {
+    "airplane": 0.929,
+    "automobile": 0.963,
+    "bird": 0.867,
+    "cat": 0.819,
+    "deer": 0.928,
+    "dog": 0.872,
+    "frog": 0.954,
+    "horse": 0.937,
+    "ship": 0.961,
+    "truck": 0.947
+  }
+}

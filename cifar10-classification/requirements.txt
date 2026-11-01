@@ -1,0 +1,7 @@
+# Python 3.9+ (tested with Python 3.9.6 on macOS, Apple Silicon / MPS)
+torch==2.8.0
+torchvision==0.23.0
+numpy==2.0.2
+matplotlib==3.9.4
+pillow==11.3.0
+pytest==8.4.2

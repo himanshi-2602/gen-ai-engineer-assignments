@@ -1,0 +1,22 @@
+{
+  "model": "residual",
+  "parameters": 1190922,
+  "test_accuracy": 0.9179,
+  "test_loss": 0.2386946533203125,
+  "best_val_accuracy": 0.9258,
+  "best_epoch": 30,
+  "epochs_trained": 30,
+  "train_time_seconds": 847.08007645607,
+  "per_class_accuracy": {
+    "airplane": 0.934,
+    "automobile": 0.956,
+    "bird": 0.855,
+    "cat": 0.811,
+    "deer": 0.936,
+    "dog": 0.881,
+    "frog": 0.946,
+    "horse": 0.943,
+    "ship": 0.966,
+    "truck": 0.951
+  }
+}
