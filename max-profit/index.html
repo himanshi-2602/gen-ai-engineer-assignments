@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Max Profit Problem</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Max Profit Problem</h1>
+      <p class="subtitle">
+        Find the mix of Theatres, Pubs and Commercial Parks that earns the most in <em>n</em> units of time.
+        Only one property can be under construction at a time.
+      </p>
+    </header>
+
+    <section class="card buildings">
+      <table>
+        <thead>
+          <tr><th>Building</th><th>Build time</th><th>Earnings / unit</th><th>Earnings per build unit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><i class="swatch T"></i>Theatre (T)</td><td>5</td><td>$1500</td><td>300</td></tr>
+          <tr><td><i class="swatch P"></i>Pub (P)</td><td>4</td><td>$1000</td><td>250</td></tr>
+          <tr><td><i class="swatch C"></i>Commercial Park (C)</td><td>10</td><td>$2000</td><td>200</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <form id="input-form" class="card" novalidate>
+      <label for="time">Time units (n)</label>
+      <div class="input-row">
+        <input id="time" type="text" inputmode="numeric" value="13" autocomplete="off" />
+        <button type="submit">Calculate</button>
+      </div>
+      <div class="examples">
+        <span>Try:</span>
+        <button type="button" class="chip" data-example="7">Test case 1 (7)</button>
+        <button type="button" class="chip" data-example="8">Test case 2 (8)</button>
+        <button type="button" class="chip" data-example="13">Test case 3 (13)</button>
+        <button type="button" class="chip" data-example="9">Tie (9)</button>
+        <button type="button" class="chip" data-example="50">50</button>
+      </div>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+
+    <section id="results" hidden>
+      <div class="card">
+        <div class="result-total">Earnings: <strong id="earnings">$0</strong></div>
+        <h2>Solutions</h2>
+        <ol id="solutions" class="solutions"></ol>
+      </div>
+
+      <div class="card">
+        <div class="chart-header">
+          <h2>Build timeline</h2>
+          <div class="legend">
+            <span><i class="swatch build"></i>Under construction</span>
+            <span><i class="swatch T"></i>Theatre</span>
+            <span><i class="swatch P"></i>Pub</span>
+            <span><i class="swatch C"></i>Commercial</span>
+          </div>
+        </div>
+        <div id="timelines"></div>
+      </div>
+
+      <details class="card">
+        <summary>Dynamic programming table</summary>
+        <p class="note">
+          <code>best[r] = max over buildings with time &lt; r of rate × (r − time) + best[r − time]</code>,
+          where <em>r</em> is the time remaining.
+        </p>
+        <div id="dp-table" class="table-wrap"></div>
+      </details>
+    </section>
+  </main>
+
+  <script src="profit.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
