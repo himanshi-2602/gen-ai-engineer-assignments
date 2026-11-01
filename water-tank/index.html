@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Water Tank Problem</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Water Tank Problem</h1>
+      <p class="subtitle">
+        Enter block heights (whole numbers ≥ 0) to see how many units of water are stored between the blocks.
+      </p>
+    </header>
+
+    <form id="input-form" class="card" novalidate>
+      <label for="heights">Block heights</label>
+      <div class="input-row">
+        <input id="heights" type="text" value="[0,4,0,0,0,6,0,6,4,0]"
+               placeholder="e.g. 0,4,0,0,0,6,0,6,4,0" autocomplete="off" spellcheck="false" />
+        <button type="submit">Calculate</button>
+      </div>
+      <div class="examples">
+        <span>Try:</span>
+        <button type="button" class="chip" data-example="0,4,0,0,0,6,0,6,4,0">Assignment example</button>
+        <button type="button" class="chip" data-example="0,1,0,2,1,0,1,3,2,1,2,1">Classic</button>
+        <button type="button" class="chip" data-example="4,2,0,3,2,5">Valley</button>
+        <button type="button" class="chip" data-example="1,2,3,4,5">No water</button>
+      </div>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+
+    <section id="results" hidden>
+      <div class="card result-total">
+        Output: <strong id="total">0</strong> <span id="units">Units</span>
+      </div>
+
+      <div class="card">
+        <div class="chart-header">
+          <h2>Input: blocks with water</h2>
+          <div class="legend">
+            <span><i class="swatch block"></i>Block</span>
+            <span><i class="swatch water"></i>Water</span>
+          </div>
+        </div>
+        <div class="chart" id="chart-full"></div>
+      </div>
+
+      <div class="card">
+        <div class="chart-header">
+          <h2>Output: water only</h2>
+        </div>
+        <div class="chart" id="chart-water"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="water.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
