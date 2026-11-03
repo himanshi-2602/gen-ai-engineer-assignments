@@ -12,7 +12,7 @@
 | Search latency | Hybrid ~11 ms; hybrid + re-rank ~190–230 ms per query (Apple M5) |
 | Summary length control | Actual/requested words = **1.00** on average; **100%** of summaries within ±20% |
 | ROUGE vs. human highlights | Gemini R-1/R-2/R-L = 0.363 / 0.107 / 0.233; Lead-3 baseline 0.395 / 0.166 / 0.237 (discussed in §5.3) |
-| Human evaluation | 10 end-to-end summaries prepared; ratings pending (§5.4) |
+| Summary quality (AI judge, 10 end-to-end summaries) | Coherence 4.4, coverage 4.7, **faithfulness 4.6**, relevance 4.5 (1–5); length OK 10/10. Main weakness: padding with off-topic sources at 300 words (§5.4) |
 
 ---
 
@@ -106,7 +106,7 @@ For a query, each retriever returns its top 200 **passages**. A document's rank 
 I considered fine-tuning and decided against it:
 - **Retrieval already supplies the domain knowledge.** The summarizer reads the actual articles at query time, so fine-tuning wouldn't teach it facts it needs.
 - **Cost and resources:** fine-tuning a capable LLM needs paid GPU time or a paid tuning API, and the assignment itself notes that LLMs are resource-intensive.
-- **Measured need:** length control is already almost perfect (§5.3), and human ratings (§5.4) show the zero-shot summaries are coherent and faithful.
+- **Measured need:** length control is already almost perfect (§5.3), and the summary ratings (§5.4) show the zero-shot summaries are coherent and faithful; their main weakness (padding with off-topic sources) is a prompt and selection issue, not something fine-tuning is needed for.
 
 Fine-tuning would make sense for a strict house style, or for a much smaller self-hosted model, e.g. a distilled summarizer trained on the 287k CNN/DM training pairs, to cut per-summary cost at scale.
 
@@ -194,7 +194,16 @@ For 30 test documents, Gemini summarized each article with a requested length eq
 ### 5.4 Human evaluation (`eval/human_eval.py`)
 Ten end-to-end cases: a test query, then the top-5 documents (hybrid + re-rank), then a Gemini summary at a requested length that cycles through 60, 150 and 300 words. The rater sees the query, the opening of each source and the summary ([`eval/human/to_rate.md`](eval/human/to_rate.md)), and scores 1–5 for **coherence**, **coverage** (captures the essence), **faithfulness** (no unsupported claims) and **relevance** to the query, plus whether the length is appropriate ([`ratings.csv`](eval/human/ratings.csv)).
 
-**Status: ratings pending.** The ten summaries and the rating sheet are generated and committed; the scores will be added here once the human rating is complete (`python eval/human_eval.py report` then writes `eval/results/human_eval.md`). Length was already checked automatically: all ten summaries are within ±10% of the requested length.
+**Interim result: AI-judge evaluation (an AI model, not a human), with claim checking.** The ten summaries were rated against the same rubric by an AI judge (Claude Opus 5.5). To ground the faithfulness scores, every checkable claim (names, numbers, quotes) was looked up in the full text of the cited article. Details per summary: [`eval/results/ai_judge_eval.md`](eval/results/ai_judge_eval.md).
+
+| Criterion (1–5) | Coherence | Coverage | Faithfulness | Relevance | Length appropriate |
+|---|---|---|---|---|---|
+| Mean (min–max) | 4.4 (3–5) | 4.7 (4–5) | 4.6 (3–5) | 4.5 (2–5) | 10/10 |
+
+- **Faithfulness:** out of about 70 verified claims, one unsupported characterization ("complex tactical operation", where the source uses a goalkeeper analogy) and a few over-broad citations (a fact cited to [3][5] that appears only in [3]). No invented events, people or numbers.
+- **Length control:** all ten within ±10% of the requested 60/150/300 words.
+- **Main weakness found:** at **300 words**, when only one or two of the five selected articles match the query, the summarizer **pads with the unrelated articles** (KFC: relevance 2/5; lion: 3/5). At 60 words it correctly ignores them. Fixes are listed in §8.
+- **Human evaluation:** independent human ratings were not collected for this submission. The rating sheet ([`to_rate.md`](eval/human/to_rate.md), [`ratings.csv`](eval/human/ratings.csv)) and the aggregation script are ready, so human scores can be added with `python eval/human_eval.py report`. An AI judge is a useful, evidence-checked proxy, but it is not a substitute: it may share blind spots with the summarizing model.
 
 ---
 
@@ -246,7 +255,8 @@ Ten end-to-end cases: a test query, then the top-5 documents (hybrid + re-rank),
 ## 8. Limitations and future work
 - **Relevance labels:** known-item evaluation counts only the source article as relevant. Graded human relevance judgements for a sample of queries would measure the precision of the *other* results too.
 - **Fusion weighting:** learn per-query weights (e.g. more BM25 weight for long, quote-like queries) on a separate development set.
+- **Off-topic padding in long summaries (found in §5.4):** instruct the summarizer to skip sources unrelated to the query even if the summary is shorter, and pass only documents whose re-ranker score clears a threshold.
+- **Human evaluation:** collect independent human ratings with the prepared sheet (several raters, with inter-rater agreement), to complement the AI-judge scores.
 - **Faithfulness checking:** automatically verify that each summary sentence is supported by a cited passage (an NLI model or LLM-as-judge), and flag unsupported claims in the UI.
-- **Larger evaluation of summaries:** more documents, several raters, and inter-rater agreement.
 - **Hosting:** containerise and deploy on a ~2 GB instance; cache frequent queries and summaries.
 - **Freshness:** incremental ingestion of new articles (append to BM25 and FAISS without a full rebuild).

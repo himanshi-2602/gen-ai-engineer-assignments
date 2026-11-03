@@ -1,6 +1,6 @@
 # Document Search and Summarization with LLMs
 
-Search about 25,000 CNN/DailyMail news articles with **hybrid retrieval** (BM25 keywords + bge-small sentence embeddings, fused with Reciprocal Rank Fusion, then re-ranked by a cross-encoder). Then **summarize** the results with Gemini at a length you choose. Includes a web interface with auto-suggest, pagination and a summary-length slider, plus a full evaluation: retrieval accuracy for 4 methods, ROUGE against human-written highlights, and human ratings.
+Search about 25,000 CNN/DailyMail news articles with **hybrid retrieval** (BM25 keywords + bge-small sentence embeddings, fused with Reciprocal Rank Fusion, then re-ranked by a cross-encoder). Then **summarize** the results with Gemini at a length you choose. Includes a web interface with auto-suggest, pagination and a summary-length slider, plus a full evaluation: retrieval accuracy for 4 methods, ROUGE against human-written highlights, and summary ratings (AI judge, with claim checking).
 
 📄 **The detailed report is in [REPORT.md](REPORT.md):** data pre-processing and its justification, methodology, evaluation procedure and results, challenges and solutions, scalability.
 
@@ -30,7 +30,7 @@ Deliverables: a detailed report, the full codebase with a README, and (bonus) ho
 | Test set: a query generated per test document | 200 LLM-written queries + 1,000 highlight queries. [`eval/make_testset.py`](eval/make_testset.py) → [`eval/data/testset.json`](eval/data/testset.json) |
 | Search accuracy | Recall@1/5/10, MRR@10, nDCG@10 and latency for 4 methods. [`eval/eval_search.py`](eval/eval_search.py) |
 | ROUGE | Gemini vs Lead-3 baseline against human highlights. [`eval/eval_summaries.py`](eval/eval_summaries.py) |
-| Human evaluation | Rating sheet and report. [`eval/human_eval.py`](eval/human_eval.py) → [`eval/human/`](eval/human/) |
+| Human evaluation | Rating sheet + aggregation script ready ([`eval/human/`](eval/human/)); interim **AI-judge** ratings with claim checking: [`eval/results/ai_judge_eval.md`](eval/results/ai_judge_eval.md) |
 | UI with auto-suggest, pagination, adjustable length (bonus) | [`app.py`](app.py) + [`static/`](static/) |
 | Report: preprocessing, methodology, evaluation, challenges | [REPORT.md](REPORT.md) |
 | README with setup and run instructions; local setup (bonus) | This file |
