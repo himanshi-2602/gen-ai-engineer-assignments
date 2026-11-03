@@ -1,0 +1,26 @@
+{
+ "documents": 30,
+ "llm": {
+  "rouge1": 0.36317789191463185,
+  "rouge2": 0.10702045559919275,
+  "rougeL": 0.23340957684702343
+ },
+ "lead3_same_docs": {
+  "rouge1": 0.3949247967916254,
+  "rouge2": 0.1659612528691806,
+  "rougeL": 0.2371693682018167
+ },
+ "lead3_all_test_docs": {
+  "rouge1": 0.40643818021167266,
+  "rouge2": 0.17963043590830888,
+  "rougeL": 0.25505800042088805,
+  "documents": 1200
+ },
+ "length_ratio_mean": 0.9983915343915345,
+ "length_within_20pct": 1.0,
+ "models": [
+  "gemini-3-flash-preview",
+  "gemini-3.1-flash-lite",
+  "gemini-3.5-flash"
+ ]
+}

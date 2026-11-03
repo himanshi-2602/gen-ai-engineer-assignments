@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Search &amp; Summaries</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>News Search &amp; Summaries</h1>
+      <p class="subtitle" id="corpus-info">Hybrid keyword + semantic search over CNN/DailyMail news, with AI summaries of the results.</p>
+    </header>
+
+    <form id="search-form" class="card" autocomplete="off">
+      <div class="search-row">
+        <div class="suggest-wrap">
+          <input id="q" type="search" placeholder="Search news, e.g. Ebola outbreak in West Africa" aria-label="Search query"
+                 aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false" required>
+          <ul id="suggestions" role="listbox" hidden></ul>
+        </div>
+        <button type="submit" class="primary">Search</button>
+      </div>
+      <div class="options">
+        <label>Method
+          <select id="method">
+            <option value="hybrid_rerank" selected>Hybrid + re-rank (best)</option>
+            <option value="hybrid">Hybrid (BM25 + embeddings)</option>
+            <option value="dense">Embeddings only</option>
+            <option value="bm25">BM25 keywords only</option>
+          </select>
+        </label>
+        <label>Per page
+          <select id="page-size"><option>5</option><option selected>10</option><option>20</option></select>
+        </label>
+      </div>
+    </form>
+
+    <section id="summary-panel" class="card" hidden>
+      <div class="summary-head">
+        <h2>Summary</h2>
+        <div class="length">
+          <label for="length">Length: <strong id="length-value">150</strong> words</label>
+          <input id="length" type="range" min="30" max="500" step="10" value="150">
+          <div class="presets">
+            <button type="button" data-words="60">Short</button>
+            <button type="button" data-words="150">Medium</button>
+            <button type="button" data-words="300">Long</button>
+          </div>
+        </div>
+      </div>
+      <p class="muted">Summarizes the <span id="selected-count">5</span> selected results (tick or untick results below).</p>
+      <button id="summarize" class="primary" type="button">Summarize selected results</button>
+      <div id="summary-out" aria-live="polite"></div>
+    </section>
+
+    <section id="results-panel" hidden>
+      <p id="results-meta" class="muted"></p>
+      <ol id="results"></ol>
+      <nav id="pagination" aria-label="Result pages"></nav>
+    </section>
+
+    <p id="error" class="error" role="alert" hidden></p>
+  </main>
+
+  <dialog id="reader">
+    <form method="dialog"><button class="close" aria-label="Close">✕</button></form>
+    <h2 id="reader-title"></h2>
+    <p id="reader-meta" class="muted"></p>
+    <div id="reader-text"></div>
+  </dialog>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

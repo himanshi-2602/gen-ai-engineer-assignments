@@ -1,0 +1,11 @@
+id,query,target_words,actual_words,model,coherence,coverage,faithfulness,relevance,length_ok,comment
+1,Teenagers adopting privacy measures and vague-booking on social media,60,57,gemini-3-flash-preview,,,,,,
+2,Russia confirms North Korean leader Kim Jong Un Moscow visit,150,146,gemini-3-flash-preview,,,,,,
+3,KFC apologizes after broadcasting sex scene during family dinner,300,302,gemini-3-flash-preview,,,,,,
+4,Disabled girl banned from rides at Blackpool Pleasure Beach,60,59,gemini-3-flash-preview,,,,,,
+5,George Ford inspires Bath comeback against Leinster,150,148,gemini-3-flash-preview,,,,,,
+6,Watford fan Nick Cruwys attacked after Wolves match,300,327,gemini-3-flash-preview,,,,,,
+7,Pennsylvania bride shoots niece dead wedding night,60,61,gemini-3-flash-preview,,,,,,
+8,Body of missing student Jennifer Houle found in Mississippi River,150,165,gemini-3-flash-preview,,,,,,
+9,lion gets head stuck in feeding barrel at zoo,300,304,gemini-3-flash-preview,,,,,,
+10,Kenyan police arrest suspects after Garissa University College attack,60,61,gemini-3.1-flash-lite,,,,,,
